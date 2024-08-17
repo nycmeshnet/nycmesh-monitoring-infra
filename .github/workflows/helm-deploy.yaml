@@ -45,4 +45,5 @@ jobs:
             --kubeconfig ./config \
             --kube-apiserver https://${{ secrets.SSH_TARGET_IP }}:6443 \
             -f ./influxdb/${{ inputs.environment }}.values.yaml \
+            --create-namespace  \
             -n ${{ vars.APP_NAMESPACE }}
