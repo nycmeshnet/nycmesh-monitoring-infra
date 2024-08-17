@@ -1,1 +1,7 @@
 # :)
+persistence:
+  size: 5Gi
+
+service:
+  type: NodePort
+  nodePort: 30086
