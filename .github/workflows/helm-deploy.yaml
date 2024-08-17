@@ -46,4 +46,5 @@ jobs:
             --kube-apiserver https://${{ secrets.SSH_TARGET_IP }}:6443 \
             -f ./influxdb/${{ inputs.environment }}.values.yaml \
             --create-namespace  \
+            --set adminUser.password="${{ secrets.INFLUXDB_ADMIN_PASSWORD }}" \
             -n ${{ vars.APP_NAMESPACE }}
