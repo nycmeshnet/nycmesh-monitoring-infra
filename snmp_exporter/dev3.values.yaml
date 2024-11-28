@@ -4,3 +4,5 @@
 replicas: 1
 
 resources: {}
+
+revisionHistoryLimit: 3
