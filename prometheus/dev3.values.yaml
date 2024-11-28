@@ -36,11 +36,19 @@ ruleFiles: {}
 serverFiles:
   alerting_rules.yml: {}
   recording_rules.yml: {}
+  prometheus.yml:
+    scrape_configs:
+      - job_name: node-sn3-ntp
+        static_configs:
+        - targets: ['10.70.90.138:9100']
+      - job_name: nycmesh-1934-pve-mastodon
+        static_configs:
+        - targets: ['10.70.187.12:9100']
+      - job_name: nycmesh-713-02-prem1
+        static_configs:
+        - targets: ['10.70.90.142:9100']
 
-extraScrapeConfigs: |
-  - job_name: node-sn3-ntp
-    static_configs:
-     - targets: ['10.70.90.138:9100']
+extraScrapeConfigs: ""
 
 alertmanager:
   enabled: false
