@@ -31,11 +31,13 @@ server:
 
   revisionHistoryLimit: 3
 
+ruleFiles: {}
+
 serverFiles:
   alerting_rules.yml: {}
   recording_rules.yml: {}
   prometheus.yml:
-    scrape_configs: []
+    scrape_configs: {}
 
 extraScrapeConfigs: |
   - job_name: node-sn3-ntp
