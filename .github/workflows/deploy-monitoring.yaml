@@ -1,4 +1,4 @@
-name: Deploy Influxdb
+name: Deploy Monitoring
 
 on:
   push:
