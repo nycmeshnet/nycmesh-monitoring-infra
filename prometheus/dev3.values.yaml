@@ -1,0 +1,55 @@
+# Values are documented at:
+#  https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
+
+server:
+  replicaCount: 1
+
+  global:
+    scrape_interval: 1m
+    scrape_timeout: 15s
+    evaluation_interval: 1m
+
+  retention: "15d"
+  retentionSize: ""
+
+  persistentVolume:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    mountPath: /data
+    subPath: ""
+    size: 8Gi
+    storageClassName: longhorn
+
+  alertmanagers: []
+
+  resources: {}
+
+  dnsConfig:
+    nameservers:
+      - 10.10.10.10
+
+  revisionHistoryLimit: 3
+
+serverFiles:
+  alerting_rules.yml: {}
+  recording_rules.yml: {}
+  prometheus.yml:
+    scrape_configs: []
+
+extraScrapeConfigs: |
+  - job_name: node-sn3-ntp
+    static_configs:
+     - targets: ['10.70.90.138:9100']
+
+alertmanager:
+  enabled: false
+
+kube-state-metrics:
+  enabled: false
+
+prometheus-node-exporter:
+  enabled: false
+
+prometheus-pushgateway:
+  enabled: false

@@ -1,3 +1,6 @@
+# Values are documented at:
+#  https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+
 replicas: 1
 
 dnsConfig:
