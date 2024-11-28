@@ -47,6 +47,32 @@ serverFiles:
       - job_name: nycmesh-713-02-prem1
         static_configs:
         - targets: ['10.70.90.142:9100']
+      - job_name: 'snmp'
+        scrape_interval: 30s
+        scrape_timeout: 20s
+        static_configs:
+          - targets:
+            - 10.70.188.1   #1934-core (Juniper at Grand)
+            - 10.70.72.1    #sn1-core
+            - 10.70.89.129  #sn3-core
+            - 10.70.89.131  #sn3-edge2n
+            - 10.70.102.6   #sn10-nat (CCR1009 - 111 8th Av.)
+            - 10.99.97.65   #3461-PH
+            - 10.97.79.1    #1340-core (Saratoga)
+            - 10.97.98.65   #1417-core (SSHH)
+            - 10.70.181.1   #5916-core (Vernon)
+            - 10.70.188.126 #siklu at Grand to 5916-Vernon
+            - 10.70.95.67   #siklu at SN3 to 162-SouthSlope
+        metrics_path: /snmp
+        params:
+          module: [if_mib]
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
       - job_name: 'snmp mikrotik'
         scrape_interval: 30s
         scrape_timeout: 20s
