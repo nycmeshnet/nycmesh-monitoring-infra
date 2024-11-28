@@ -10,7 +10,7 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - grafana-dev.mesh.nycmesh.net
+    - grafana-new.mesh.nycmesh.net
 
 resources: {}
 
