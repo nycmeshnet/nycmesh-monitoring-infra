@@ -5,7 +5,7 @@ dnsConfig:
     - 10.10.10.10
 
 ingress:
-  enabled: false
+  enabled: true
   ingressClassName: traefik
   path: /
   pathType: Prefix
