@@ -23,7 +23,13 @@ server:
 
   alertmanagers: []
 
-  resources: {}
+  resources:
+    requests:
+    memory: 512m
+    cpu: 100m
+  limits:
+    memory: 1024m
+    cpu: 200m
 
   dnsConfig:
     nameservers:

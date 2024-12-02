@@ -44,38 +44,38 @@ jobs:
     needs: deploy_snmp_exporter_dev3
     #if: github.ref == 'refs/heads/main'
 
-  deploy_influxdb_prod1:
-    name: Deploy influxdb to prod 3
-    uses: ./.github/workflows/helm-influxdb.yaml
-    with:
-      environment: prod1
-    secrets: inherit
-    needs: deploy_prometheus_dev3
-    if: github.ref == 'refs/heads/main'
+  # deploy_influxdb_prod1:
+  #   name: Deploy influxdb to prod 3
+  #   uses: ./.github/workflows/helm-influxdb.yaml
+  #   with:
+  #     environment: prod1
+  #   secrets: inherit
+  #   needs: deploy_prometheus_dev3
+  #   if: github.ref == 'refs/heads/main'
 
-  deploy_grafana_prod1:
-    name: Deploy grafana to prod 1
-    uses: ./.github/workflows/helm-grafana.yaml
-    with:
-      environment: prod1
-    secrets: inherit
-    needs: deploy_influxdb_prod1
-    if: github.ref == 'refs/heads/main'
+  # deploy_grafana_prod1:
+  #   name: Deploy grafana to prod 1
+  #   uses: ./.github/workflows/helm-grafana.yaml
+  #   with:
+  #     environment: prod1
+  #   secrets: inherit
+  #   needs: deploy_influxdb_prod1
+  #   if: github.ref == 'refs/heads/main'
 
-  deploy_snmp_exporter_prod1:
-    name: Deploy snmp exporter to prod 1
-    uses: ./.github/workflows/helm-snmp_exporter.yaml
-    with:
-      environment: prod1
-    secrets: inherit
-    needs: deploy_grafana_prod1
-    if: github.ref == 'refs/heads/main'
+  # deploy_snmp_exporter_prod1:
+  #   name: Deploy snmp exporter to prod 1
+  #   uses: ./.github/workflows/helm-snmp_exporter.yaml
+  #   with:
+  #     environment: prod1
+  #   secrets: inherit
+  #   needs: deploy_grafana_prod1
+  #   if: github.ref == 'refs/heads/main'
 
-  deploy_prometheus_prod1:
-    name: Deploy prometheus to prod 1
-    uses: ./.github/workflows/helm-prometheus.yaml
-    with:
-      environment: prod1
-    secrets: inherit
-    needs: deploy_snmp_exporter_prod1
-    if: github.ref == 'refs/heads/main'
+  # deploy_prometheus_prod1:
+  #   name: Deploy prometheus to prod 1
+  #   uses: ./.github/workflows/helm-prometheus.yaml
+  #   with:
+  #     environment: prod1
+  #   secrets: inherit
+  #   needs: deploy_snmp_exporter_prod1
+  #   if: github.ref == 'refs/heads/main'
