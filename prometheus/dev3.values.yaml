@@ -25,10 +25,10 @@ server:
 
   resources:
     requests:
-    memory: 512m
+    memory: 512Mi
     cpu: 100m
   limits:
-    memory: 1024m
+    memory: 1024Mi
     cpu: 200m
 
   dnsConfig:
