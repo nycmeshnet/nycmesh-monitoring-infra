@@ -53,6 +53,7 @@ serverFiles:
       - job_name: nycmesh-713-02-prem1
         static_configs:
         - targets: ['10.70.90.142:9100']
+      # 1st scrape module (using if_mib - general OID))
       - job_name: 'snmp'
         scrape_interval: 30s
         scrape_timeout: 20s
@@ -79,6 +80,7 @@ serverFiles:
             target_label: instance
           - target_label: __address__
             replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # 2nd scrape module (using mikroTik for the mtxrWl60 specific)
       - job_name: 'snmp mikrotik'
         scrape_interval: 30s
         scrape_timeout: 20s
@@ -104,6 +106,49 @@ serverFiles:
             target_label: instance
           - target_label: __address__
             replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # 3rd scrape module (using gbe-lr custom module)
+      - job_name: 'ubnt gbe-lr'
+        scrape_interval: 30s
+        scrape_timeout: 20s
+        static_configs:
+          - targets:
+            - 10.70.131.237 #1340-gbelr-5014
+            - 10.97.98.115  #1417-gbelr-3606
+            #- 10.70.198.2  #584-ups
+        metrics_path: /snmp
+        params:
+          module: ['gbe-lr']
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # 4th scrape module (using apc-ups custom module)
+      - job_name: 'apc-ups'
+        scrape_interval: 30s
+        scrape_timeout: 20s
+        static_configs:
+          - targets:
+            - 10.70.198.2 #584-ups
+        metrics_path: /snmp
+        params:
+          module: ['apc-ups']
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # Network UPS Tools
+      - job_name: nut
+        metrics_path: /ups_metrics
+        static_configs:
+          - targets: ['10.70.131.230:9199']
+            labels:
+              ups:  "Saratoga-1340"
 
 extraScrapeConfigs: ""
 
