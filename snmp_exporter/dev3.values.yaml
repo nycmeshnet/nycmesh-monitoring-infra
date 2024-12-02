@@ -1,0 +1,14 @@
+# Values are documented at:
+#  https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-snmp-exporter/values.yaml
+
+replicas: 1
+
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 100m
+  limits:
+    memory: 256Mi
+    cpu: 200m
+
+revisionHistoryLimit: 3

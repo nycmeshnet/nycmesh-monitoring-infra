@@ -1,0 +1,33 @@
+# Values are documented at:
+#  https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+
+replicas: 1
+
+dnsConfig:
+  nameservers:
+    - 10.10.10.10
+
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  path: /
+  pathType: Prefix
+  hosts:
+    - grafana-new.mesh.nycmesh.net
+
+resources: {}
+
+persistence:
+  type: pvc
+  enabled: true
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  finalizers:
+    - kubernetes.io/pvc-protection
+
+adminUser: admin
+# adminPassword: # Set via the github actions workflow
+
+revisionHistoryLimit: 4

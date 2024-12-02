@@ -1,0 +1,165 @@
+# Values are documented at:
+#  https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
+
+server:
+  replicaCount: 1
+
+  global:
+    scrape_interval: 1m
+    scrape_timeout: 15s
+    evaluation_interval: 1m
+
+  retention: "15d"
+  retentionSize: ""
+
+  persistentVolume:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    mountPath: /data
+    subPath: ""
+    size: 8Gi
+    storageClassName: longhorn
+
+  alertmanagers: []
+
+  resources:
+    requests:
+    memory: 512Mi
+    cpu: 100m
+  limits:
+    memory: 1024Mi
+    cpu: 200m
+
+  dnsConfig:
+    nameservers:
+      - 10.10.10.10
+
+  revisionHistoryLimit: 3
+
+ruleFiles: {}
+
+serverFiles:
+  alerting_rules.yml: {}
+  recording_rules.yml: {}
+  prometheus.yml:
+    scrape_configs:
+      - job_name: node-sn3-ntp
+        static_configs:
+        - targets: ['10.70.90.138:9100']
+      - job_name: nycmesh-1934-pve-mastodon
+        static_configs:
+        - targets: ['10.70.187.12:9100']
+      - job_name: nycmesh-713-02-prem1
+        static_configs:
+        - targets: ['10.70.90.142:9100']
+      # 1st scrape module (using if_mib - general OID))
+      - job_name: 'snmp'
+        scrape_interval: 30s
+        scrape_timeout: 20s
+        static_configs:
+          - targets:
+            - 10.70.188.1   #1934-core (Juniper at Grand)
+            - 10.70.72.1    #sn1-core
+            - 10.70.89.129  #sn3-core
+            - 10.70.89.131  #sn3-edge2n
+            - 10.70.102.6   #sn10-nat (CCR1009 - 111 8th Av.)
+            - 10.99.97.65   #3461-PH
+            - 10.97.79.1    #1340-core (Saratoga)
+            - 10.97.98.65   #1417-core (SSHH)
+            - 10.70.181.1   #5916-core (Vernon)
+            - 10.70.188.126 #siklu at Grand to 5916-Vernon
+            - 10.70.95.67   #siklu at SN3 to 162-SouthSlope
+        metrics_path: /snmp
+        params:
+          module: [if_mib]
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # 2nd scrape module (using mikroTik for the mtxrWl60 specific)
+      - job_name: 'snmp mikrotik'
+        scrape_interval: 30s
+        scrape_timeout: 20s
+        static_configs:
+          - targets:
+            - 10.42.43.18     # lhg60 SN1 - Henry (407)
+            - 10.70.161.167   # lhg60 Rivington (2463) - Henry (407)
+            - 10.70.188.63    # lhg60 Grand (1932) - Rivington (2463)
+            - 10.101.40.247   # cube nycmesh-5283-60gx3 
+            - 10.96.107.184   # nycmesh-430-cube60g
+            - 10.69.73.125    # nycmesh-7325-cube60g
+            - 10.96.54.218    # nycmesh-219-60xg3
+            - 10.103.204.102  # nycmesh7985-cube60g
+            - 10.96.107.185   # nycmesh-lhg60-430
+            - 10.70.188.202   # nycmesh-1932-cubepro-1933
+        metrics_path: /snmp
+        params:
+          module: [mikrotik]
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # 3rd scrape module (using gbe-lr custom module)
+      - job_name: 'ubnt gbe-lr'
+        scrape_interval: 30s
+        scrape_timeout: 20s
+        static_configs:
+          - targets:
+            - 10.70.131.237 #1340-gbelr-5014
+            - 10.97.98.115  #1417-gbelr-3606
+            #- 10.70.198.2  #584-ups
+        metrics_path: /snmp
+        params:
+          module: ['gbe-lr']
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # 4th scrape module (using apc-ups custom module)
+      - job_name: 'apc-ups'
+        scrape_interval: 30s
+        scrape_timeout: 20s
+        static_configs:
+          - targets:
+            - 10.70.198.2 #584-ups
+        metrics_path: /snmp
+        params:
+          module: ['apc-ups']
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: snmpexporter-prometheus-snmp-exporter.snmpexporter.svc.cluster.local:9116  # The SNMP exporter's real hostname:port.
+      # Network UPS Tools
+      - job_name: nut
+        metrics_path: /ups_metrics
+        static_configs:
+          - targets: ['10.70.131.230:9199']
+            labels:
+              ups:  "Saratoga-1340"
+
+extraScrapeConfigs: ""
+
+alertmanager:
+  enabled: false
+
+kube-state-metrics:
+  enabled: false
+
+prometheus-node-exporter:
+  enabled: false
+
+prometheus-pushgateway:
+  enabled: false
